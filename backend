@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Modeling Hub</title>
+  <style>
+    /* HOME HERO SECTION */
+.home-hero {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.home-hero h2 {
+  font-size: 2.5rem;
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+.home-hero p {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* HOME PAGE CARDS */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 15px;
+  margin-bottom: 15px;
+}
+
+.card h3 {
+  font-size: 1.5rem;
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+.card p {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 20px;
+}
+
+.cta-button {
+  padding: 10px 20px;
+  background: linear-gradient(90deg, #007bff, #0056b3);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+  background: linear-gradient(90deg, #0056b3, #007bff);
+}
+
+    /* GENERAL RESET */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* BODY STYLING */
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #3a3a3a, #1e1e2f);
+      color: #fff;
+      line-height: 1.6;
+    }
+
+    /* HEADER */
+    header {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 20px 0;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+    }
+
+    /* NAVIGATION BAR */
+    nav {
+      display: flex;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 15px 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    nav a {
+      margin: 0 15px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 8px 15px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    nav a:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* GENERAL CONTAINER */
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    /* FORM STYLING */
+    .form-container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+      max-width: 400px;
+      margin: auto;
+      color: #fff;
+      text-align: center;
+    }
+
+    .form-container h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    .form-container input,
+    .form-container select,
+    .form-container textarea {
+      width: 100%;
+      padding: 15px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 10px;
+      background-color: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .form-container input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .form-container label {
+      font-size: 1rem;
+      margin-bottom: 5px;
+      display: block;
+      color: rgba(255, 255, 255, 0.8);
+      text-align: left;
+    }
+
+    .form-container .main-button {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(90deg, #007bff, #0056b3);
+      color: #fff;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .form-container .main-button:hover {
+      background: linear-gradient(90deg, #0056b3, #007bff);
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+  <style>
+/* Existing styles (leave them as they are) */
+
+/* NEW: SECTION TITLE */
+.section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+/* NEW: SEARCH BAR */
+.search-bar {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.search-bar input {
+  width: 80%;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  outline: none;
+}
+
+/* NEW: PROFILE GRID */
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  list-style: none;
+  padding: 0;
+}
+
+/* NEW: PROFILE CARD */
+.profile-card {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.profile-card img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  border: 2px solid #ffffff;
+}
+
+.profile-card h3 {
+  font-size: 1.5rem;
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+.profile-card p {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 15px;
+}
+
+.profile-card button {
+  padding: 10px 20px;
+  background: linear-gradient(90deg, #007bff, #0056b3);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.profile-card button:hover {
+  background: linear-gradient(90deg, #0056b3, #007bff);
+}
+
+/* PROFILE PICTURE STYLING */
+.profile-picture {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #ffffff;
+  margin: 20px auto;
+  display: block;
+}
+
+</style>
+
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <h1>3D Modeling Hub</h1>
+  </header>
+
+  <!-- NAVIGATION -->
+ <nav>
+  <a href="#" onclick="navigateTo('home')">Home</a>
+  <a href="#" onclick="navigateTo('signup')">Sign Up</a>
+  <a href="#" onclick="navigateTo('login')">Login</a>
+  <a href="#" onclick="navigateTo('explore')">Explore 3D Modelers</a>
+  <a href="#" onclick="navigateTo('viewProfile')">View Profile</a>
+</nav>
+
+ <!-- HOME SECTION -->
+<div id="home" class="container">
+  <div class="home-hero">
+    <h2>Welcome to the 3D Modeling Hub</h2>
+    <p>Discover, Connect, and Create in the World of 3D Artistry</p>
+  </div>
+  <div class="card-grid">
+    <div class="card">
+      <img src="https://via.placeholder.com/300x200" alt="Explore">
+      <h3>Explore 3D Modelers</h3>
+      <p>Discover talented artists and view their profiles.</p>
+      <button class="cta-button" onclick="navigateTo('explore')">Explore</button>
+    </div>
+    <div class="card">
+      <img src="https://via.placeholder.com/300x200" alt="Create Profile">
+      <h3>Create Your Profile</h3>
+      <p>Join the community by signing up and creating your professional profile.</p>
+      <button class="cta-button" onclick="navigateTo('signup')">Create Profile</button>
+    </div>
+  </div>
+</div>
+
+  <!-- SIGNUP SECTION -->
+  <div id="signup" class="container hidden">
+    <div class="form-container">
+      <h2>Create Your Profile</h2>
+      <form id="signupForm" onsubmit="event.preventDefault(); handleSignup();">
+        <input type="text" id="username" placeholder="Username (required)" required>
+        <input type="email" id="email" placeholder="Email Address (required)" required>
+        <input type="password" id="password" placeholder="Password (required)" required>
+        <input type="password" id="confirmPassword" placeholder="Confirm Password (required)" required>
+        <label for="status">Select Your Roles (required)</label>
+        <select id="status" multiple required>
+          <option value="3D Modeler">3D Modeler</option>
+          <option value="Texturing">Texturing</option>
+          <option value="Developer">Developer</option>
+        </select>
+        <input type="tel" id="phone" placeholder="Phone Number (Optional)">
+        <label for="profilePicture">Profile Picture (Optional)</label>
+        <input type="file" id="profilePicture" accept="image/*">
+        <textarea id="paymentPreferences" placeholder="Payment Preferences (Optional)"></textarea>
+        <button type="submit" class="main-button">Sign Up</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- LOGIN SECTION -->
+  <div id="login" class="container hidden">
+    <div class="form-container">
+      <h2>Login to Your Profile</h2>
+      <form id="loginForm" onsubmit="event.preventDefault(); handleLogin();">
+        <input type="text" id="loginIdentifier" placeholder="Email or Username (required)" required>
+        <input type="password" id="loginPassword" placeholder="Password (required)" required>
+        <button type="submit" class="main-button">Login</button>
+      </form>
+    </div>
+  </div>
+
+<!-- EXPLORE SECTION -->
+<div id="explore" class="container hidden">
+  <h2 class="section-title">Explore 3D Modelers</h2>
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search by username or role..." oninput="filterProfiles()">
+  </div>
+  <ul id="modelersList" class="profile-grid"></ul>
+</div>
+
+<!-- VIEW PROFILE SECTION -->
+<div id="viewProfile" class="container hidden">
+  <div class="form-container">
+    <h2>Your Profile</h2>
+    <img id="profilePictureDisplay" src="https://via.placeholder.com/150" alt="Profile Picture" class="profile-picture">
+    <label for="updateProfilePicture">Change Profile Picture</label>
+    <input type="file" id="updateProfilePicture" accept="image/*" onchange="handleProfilePictureChange(event)">
+    <form id="updateProfileForm" onsubmit="event.preventDefault(); handleProfileUpdate();">
+      <input type="text" id="updateUsername" placeholder="Username" required>
+      <input type="email" id="updateEmail" placeholder="Email Address" required>
+      <label for="updateRoles">Select Your Roles</label>
+      <select id="updateRoles" multiple required>
+        <option value="3D Modeler">3D Modeler</option>
+        <option value="Texturing">Texturing</option>
+        <option value="Developer">Developer</option>
+      </select>
+      <input type="tel" id="updatePhone" placeholder="Phone Number">
+      <textarea id="updatePaymentPreferences" placeholder="Payment Preferences"></textarea>
+      <button type="submit" class="main-button">Save Changes</button>
+    </form>
+  </div>
+</div>
+
+  <script>
+    // FUNCTION: Display Profiles in Explore Section
+function displayProfiles() {
+  const list = document.getElementById("modelersList");
+  list.innerHTML = "";
+
+  profiles.forEach(profile => {
+    const item = document.createElement("li");
+    item.classList.add("profile-card");
+    item.innerHTML = `
+      <img src="${profile.picture}" alt="${profile.username}">
+      <h3>${profile.username}</h3>
+      <p><strong>Roles:</strong> ${profile.roles.join(", ")}</p>
+      <p><strong>Email:</strong> ${profile.email}</p>
+      <button onclick="viewProfile('${profile.username}')">View Profile</button>
+      <button onclick="requestCommission('${profile.email}')">Request Commission</button>
+    `;
+    list.appendChild(item);
+  });
+}
+
+// FUNCTION: Handle Profile Update
+function handleProfileUpdate() {
+  if (!loggedInUser) {
+    console.log("You must be logged in to update your profile.");
+    navigateTo("login");
+    return;
+  }
+
+  // Update logged-in user's profile
+  loggedInUser.username = document.getElementById("updateUsername").value;
+  loggedInUser.email = document.getElementById("updateEmail").value;
+  loggedInUser.phone = document.getElementById("updatePhone").value;
+  loggedInUser.paymentPreferences = document.getElementById("updatePaymentPreferences").value;
+  loggedInUser.roles = Array.from(document.getElementById("updateRoles").selectedOptions).map(opt => opt.value);
+
+ console.log("Profile updated successfully!");
+  navigateTo("home");
+}
+
+// FUNCTION: Filter Profiles
+function filterProfiles() {
+  const query = document.getElementById("searchInput").value.toLowerCase();
+  const filteredProfiles = profiles.filter(profile =>
+    profile.username.toLowerCase().includes(query) ||
+    profile.roles.some(role => role.toLowerCase().includes(query))
+  );
+
+  const list = document.getElementById("modelersList");
+  list.innerHTML = "";
+
+  filteredProfiles.forEach(profile => {
+    const item = document.createElement("li");
+    item.classList.add("profile-card");
+    item.innerHTML = `
+      <img src="${profile.picture}" alt="${profile.username}">
+      <h3>${profile.username}</h3>
+      <p><strong>Roles:</strong> ${profile.roles.join(", ")}</p>
+      <p><strong>Email:</strong> ${profile.email}</p>
+      <button onclick="viewProfile('${profile.username}')">View Profile</button>
+      <button onclick="requestCommission('${profile.email}')">Request Commission</button>
+    `;
+    list.appendChild(item);
+  });
+}
+
+// FUNCTION: View Profile (placeholder)
+function viewProfile(username) {
+  console.log(`Viewing profile for ${username}`);
+}
+
+// FUNCTION: Request Commission (placeholder)
+function requestCommission(email) {
+  console.log(`Commission request sent to ${email}`);
+}
+
+    let profiles = []; // Array to store profiles
+    let loggedInUser = null;
+
+   // FUNCTION: Navigate Between Sections
+function navigateTo(section) {
+  const sections = ['home', 'signup', 'login', 'explore', 'viewProfile'];
+  sections.forEach(s => {
+    const sectionElement = document.getElementById(s);
+    if (sectionElement) sectionElement.classList.add('hidden');
+  });
+  document.getElementById(section).classList.remove('hidden');
+
+  if (section === "explore") displayProfiles();
+  if (section === "viewProfile") loadUserProfile(); // Load profile data when navigating to View Profile
+}
+
+// FUNCTION: Load Logged-In User's Profile into View Profile Section
+function loadUserProfile() {
+  if (!loggedInUser) {
+    console.log("You must be logged in to view your profile.");
+    navigateTo("login");
+    return;
+  }
+
+  // Pre-fill the form with the logged-in user's details
+  document.getElementById("profilePictureDisplay").src = loggedInUser.picture || "https://via.placeholder.com/150";
+  document.getElementById("updateUsername").value = loggedInUser.username;
+  document.getElementById("updateEmail").value = loggedInUser.email;
+  document.getElementById("updatePhone").value = loggedInUser.phone || "";
+  document.getElementById("updatePaymentPreferences").value = loggedInUser.paymentPreferences || "";
+
+  // Pre-select roles
+  const rolesSelect = document.getElementById("updateRoles");
+  Array.from(rolesSelect.options).forEach(option => {
+    option.selected = loggedInUser.roles.includes(option.value);
+  });
+}
+
+    // FUNCTION: Handle Sign-Up
+    function handleSignup() {
+      const username = document.getElementById("username").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+      const roles = Array.from(document.getElementById("status").selectedOptions).map(opt => opt.value);
+      const phone = document.getElementById("phone").value;
+      const profilePicture = document.getElementById("profilePicture").files[0];
+      const paymentPreferences = document.getElementById("paymentPreferences").value;
+
+      if (password !== confirmPassword) {
+        console.log("Passwords do not match!");
+        return;
+      }
+
+      const existingProfile = profiles.find(profile => profile.email === email);
+      if (existingProfile) {
+        console.log("This email is already registered. Redirecting to Login...");
+        navigateTo("login");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function () {
+        const newProfile = {
+          username,
+          email,
+          password,
+          roles,
+          phone: phone || "N/A",
+          picture: profilePicture ? reader.result : "https://via.placeholder.com/150",
+          paymentPreferences: paymentPreferences || "N/A",
+        };
+
+        profiles.push(newProfile);
+        console.log(`Profile created for ${username}!`);
+        updateNavigationForLoggedInUser();
+        navigateTo("home");
+      };
+
+      if (profilePicture) {
+        reader.readAsDataURL(profilePicture);
+      } else {
+        reader.onload();
+      }
+    }
+
+    // FUNCTION: Handle Login
+    function handleLogin() {
+      const identifier = document.getElementById("loginIdentifier").value;
+      const password = document.getElementById("loginPassword").value;
+
+      const foundProfile = profiles.find(profile =>
+        (profile.username === identifier || profile.email === identifier) && profile.password === password
+      );
+
+      if (foundProfile) {
+        loggedInUser = foundProfile;
+        updateNavigationForLoggedInUser();
+        console.log(`Welcome back, ${foundProfile.username}!`);
+        navigateTo("explore");
+      } else {
+        console.log("Profile not found. Redirecting to Sign Up...");
+        navigateTo("signup");
+      }
+    }
+
+ // FUNCTION: Display Profiles in Explore Section
+function displayProfiles() {
+  const list = document.getElementById("modelersList");
+  list.innerHTML = "";
+
+  profiles.forEach(profile => {
+    const item = document.createElement("li");
+    item.classList.add("profile-card");
+    item.innerHTML = `
+      <img src="${profile.picture}" alt="${profile.username}">
+      <h3>${profile.username}</h3>
+      <p><strong>Roles:</strong> ${profile.roles.join(", ")}</p>
+      <p><strong>Email:</strong> ${profile.email}</p>
+      <button onclick="viewProfileDetails('${profile.username}')">View Profile</button>
+    `;
+    list.appendChild(item);
+  });
+}
+
+// FUNCTION: View Profile Details (placeholder for modal or navigation)
+function viewProfileDetails(username) {
+  console.log(`Profile details for ${username}`);
+}
+
+    // INITIALIZE: Navigate to Home Page
+    navigateTo("home");
+
+// FUNCTION: Handle Profile Picture Change
+function handleProfilePictureChange(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function () {
+    document.getElementById("profilePictureDisplay").src = reader.result;
+    if (loggedInUser) {
+      loggedInUser.picture = reader.result; // Update the user's profile picture
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+// FUNCTION: Update Navigation Bar for Logged-In User
+function updateNavigationForLoggedInUser() {
+  const navBar = document.querySelector("nav");
+
+  // Remove existing welcome message and logout button (if any)
+  const existingWelcome = document.querySelector("#welcomeWrapper");
+  if (existingWelcome) existingWelcome.remove();
+
+  // Ensure the Sign Up button is visible when logged out
+  const signUpButton = document.querySelector("a[onclick=\"navigateTo('signup')\"]");
+  if (signUpButton) {
+    signUpButton.style.display = loggedInUser ? "none" : "inline-block";
+  }
+
+  // Add the "Welcome" message and Logout button if the user is logged in
+  if (loggedInUser) {
+    const welcomeWrapper = document.createElement("div");
+    welcomeWrapper.id = "welcomeWrapper";
+    welcomeWrapper.style.marginLeft = "auto";
+    welcomeWrapper.style.display = "flex";
+    welcomeWrapper.style.alignItems = "center";
+
+    const welcomeMessage = document.createElement("span");
+    welcomeMessage.id = "welcomeMessage";
+    welcomeMessage.textContent = `Welcome, ${loggedInUser.username}`;
+    welcomeMessage.style.color = "#fff";
+    welcomeMessage.style.marginRight = "15px";
+    welcomeMessage.style.fontSize = "1rem";
+
+    const logoutButton = document.createElement("button");
+    logoutButton.textContent = "Logout";
+    logoutButton.style.padding = "8px 15px";
+    logoutButton.style.background = "#f44336";
+    logoutButton.style.color = "#fff";
+    logoutButton.style.border = "none";
+    logoutButton.style.borderRadius = "5px";
+    logoutButton.style.cursor = "pointer";
+    logoutButton.onclick = handleLogout;
+
+    // Append the welcome message and logout button to the wrapper
+    welcomeWrapper.appendChild(welcomeMessage);
+    welcomeWrapper.appendChild(logoutButton);
+
+    // Append the wrapper to the navigation bar
+    navBar.appendChild(welcomeWrapper);
+  }
+}
+
+
+// FUNCTION: Show Popup for Already Logged-In User
+function showAlreadyLoggedInPopup() {
+  const popup = document.createElement("div");
+  popup.textContent = "You are already logged in!";
+  popup.style.position = "fixed";
+  popup.style.top = "10px";
+  popup.style.right = "10px";
+  popup.style.backgroundColor = "#4caf50";
+  popup.style.color = "#fff";
+  popup.style.padding = "10px 20px";
+  popup.style.borderRadius = "5px";
+  popup.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.2)";
+  popup.style.zIndex = "1000";
+  document.body.appendChild(popup);
+
+  // Fade out after 2 seconds
+  setTimeout(() => {
+    popup.style.transition = "opacity 0.5s ease";
+    popup.style.opacity = "0";
+    setTimeout(() => popup.remove(), 500);
+  }, 2000);
+}
+
+document.querySelector("a[onclick=\"navigateTo('login')\"]").onclick = function () {
+  if (loggedInUser) {
+    showAlreadyLoggedInPopup();
+    return false; // Prevent navigation
+  } else {
+    navigateTo("login");
+  }
+};
+
+// FUNCTION: Handle Logout with Confirmation
+function handleLogout() {
+  // Create a confirmation popup
+  const popup = document.createElement("div");
+  popup.style.position = "fixed";
+  popup.style.top = "50%";
+  popup.style.left = "50%";
+  popup.style.transform = "translate(-50%, -50%)";
+  popup.style.backgroundColor = "#fff";
+  popup.style.color = "#000";
+  popup.style.padding = "20px";
+  popup.style.borderRadius = "10px";
+  popup.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.3)";
+  popup.style.zIndex = "1000";
+  popup.innerHTML = `
+    <p style="font-size: 1.2rem; margin-bottom: 15px;">Are you sure you want to log out?</p>
+    <div style="display: flex; justify-content: center; gap: 15px;">
+      <button id="confirmLogout" style="padding: 10px 20px; background: #f44336; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Yes</button>
+      <button id="cancelLogout" style="padding: 10px 20px; background: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;">No</button>
+    </div>
+  `;
+
+  document.body.appendChild(popup);
+
+  // Handle Logout Confirmation
+  document.getElementById("confirmLogout").onclick = function () {
+    loggedInUser = null; // Log out the user
+    document.body.removeChild(popup); // Remove the popup
+    console.log("You have logged out successfully!");
+    updateNavigationForLoggedInUser(); // Update navigation to logged-out state
+    navigateTo("home"); // Redirect to home page
+  };
+
+  // Handle Logout Cancellation
+  document.getElementById("cancelLogout").onclick = function () {
+    document.body.removeChild(popup); // Remove the popup
+  };
+}
+
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
