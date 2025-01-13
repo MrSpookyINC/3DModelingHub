@@ -388,7 +388,7 @@
 
 <!-- VIEW PROFILE SECTION -->
 <div id="viewProfile" class="container hidden">
-  <div class="form-container">
+  <div id="yourProfileContainer" class="form-container">
     <h2>Your Profile</h2>
     <img id="profilePictureDisplay" src="https://via.placeholder.com/150" alt="Profile Picture" class="profile-picture">
     <label for="updateProfilePicture">Change Profile Picture</label>
@@ -409,26 +409,46 @@
   </div>
 </div>
 
-  <script>
-    // FUNCTION: Display Profiles in Explore Section
-function displayProfiles() {
-  const list = document.getElementById("modelersList");
-  list.innerHTML = "";
 
-  profiles.forEach(profile => {
+  <script>
+// FUNCTION: Display Profiles in Explore Section
+function displayProfiles() {
+  const list = document.getElementById("modelersList"); // Target the container for profile cards
+  list.innerHTML = ""; // Clear any existing content
+
+  profiles.forEach((profile, index) => {
     const item = document.createElement("li");
     item.classList.add("profile-card");
+
     item.innerHTML = `
       <img src="${profile.picture}" alt="${profile.username}">
       <h3>${profile.username}</h3>
       <p><strong>Roles:</strong> ${profile.roles.join(", ")}</p>
       <p><strong>Email:</strong> ${profile.email}</p>
-      <button onclick="viewProfile('${profile.username}')">View Profile</button>
-      <button onclick="requestCommission('${profile.email}')">Request Commission</button>
+      <div style="display: flex; justify-content: center; gap: 10px; margin-top: 10px;">
+        <button 
+          onclick="showCommissionForm(${index})" 
+          style="padding: 10px 20px; background: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;">
+          Request Commission
+        </button>
+        <button 
+          style="padding: 10px 20px; background: #4caf50; color: #fff; border: none; border-radius: 5px; cursor: pointer;">
+          View Profile
+        </button>
+      </div>
     `;
-    list.appendChild(item);
+
+    list.appendChild(item); // Append the profile card to the container
   });
 }
+
+// FUNCTION: View Profile Details
+function viewProfileDetails(index) {
+  const profile = profiles[index];
+  alert(`Viewing profile for ${profile.username}`);
+  // Future functionality: Navigate to a detailed profile page
+}
+
 
 // FUNCTION: Handle Profile Update
 function handleProfileUpdate() {
@@ -498,10 +518,8 @@ function navigateTo(section) {
   document.getElementById(section).classList.remove('hidden');
 
   if (section === "explore") displayProfiles();
-  if (section === "viewProfile") loadUserProfile(); // Load profile data when navigating to View Profile
+  if (section === "viewProfile") loadUserProfile(); // Ensure this line is present
 }
-
-// FUNCTION: Load Logged-In User's Profile into View Profile Section
 function loadUserProfile() {
   if (!loggedInUser) {
     console.log("You must be logged in to view your profile.");
@@ -509,18 +527,87 @@ function loadUserProfile() {
     return;
   }
 
-  // Pre-fill the form with the logged-in user's details
-  document.getElementById("profilePictureDisplay").src = loggedInUser.picture || "https://via.placeholder.com/150";
-  document.getElementById("updateUsername").value = loggedInUser.username;
-  document.getElementById("updateEmail").value = loggedInUser.email;
-  document.getElementById("updatePhone").value = loggedInUser.phone || "";
-  document.getElementById("updatePaymentPreferences").value = loggedInUser.paymentPreferences || "";
+  const profileContainer = document.getElementById("yourProfileContainer");
+  profileContainer.innerHTML = `
+    <h2>Your Profile</h2>
+    <img id="profilePictureDisplay" src="${loggedInUser.picture || "https://via.placeholder.com/150"}" alt="Profile Picture" class="profile-picture">
+    <form id="updateProfileForm" onsubmit="event.preventDefault(); handleProfileUpdate();">
+      <input type="text" id="updateUsername" value="${loggedInUser.username}" placeholder="Username" required>
+      <input type="email" id="updateEmail" value="${loggedInUser.email}" placeholder="Email Address" required>
+      <label for="updateRoles">Select Your Roles</label>
+      <select id="updateRoles" multiple required>
+        <option value="3D Modeler" ${loggedInUser.roles.includes("3D Modeler") ? "selected" : ""}>3D Modeler</option>
+        <option value="Texturing" ${loggedInUser.roles.includes("Texturing") ? "selected" : ""}>Texturing</option>
+        <option value="Developer" ${loggedInUser.roles.includes("Developer") ? "selected" : ""}>Developer</option>
+      </select>
+      <input type="tel" id="updatePhone" value="${loggedInUser.phone || ""}" placeholder="Phone Number">
+      <textarea id="updatePaymentPreferences" placeholder="Payment Preferences">${loggedInUser.paymentPreferences || ""}</textarea>
+      <button type="submit" class="main-button">Save Changes</button>
+    </form>
+  `;
 
-  // Pre-select roles
-  const rolesSelect = document.getElementById("updateRoles");
-  Array.from(rolesSelect.options).forEach(option => {
-    option.selected = loggedInUser.roles.includes(option.value);
+  // Add "View Commission Requests" button
+  const commissionButton = document.createElement("button");
+  commissionButton.textContent = "View Commission Requests";
+  commissionButton.style.marginTop = "15px";
+  commissionButton.style.padding = "10px 20px";
+  commissionButton.style.background = "#007bff";
+  commissionButton.style.color = "#fff";
+  commissionButton.style.border = "none";
+  commissionButton.style.borderRadius = "5px";
+  commissionButton.style.cursor = "pointer";
+  commissionButton.onclick = displayCommissionRequests;
+
+  profileContainer.appendChild(commissionButton);
+}
+
+// FUNCTION: Display Commission Requests
+function displayCommissionRequests() {
+  if (!loggedInUser.commissions || loggedInUser.commissions.length === 0) {
+    alert("No commission requests received.");
+    return;
+  }
+
+  const popup = document.createElement("div");
+  popup.style.position = "fixed";
+  popup.style.top = "50%";
+  popup.style.left = "50%";
+  popup.style.transform = "translate(-50%, -50%)";
+  popup.style.backgroundColor = "#fff";
+  popup.style.color = "#000";
+  popup.style.padding = "20px";
+  popup.style.borderRadius = "10px";
+  popup.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.3)";
+  popup.style.zIndex = "1000";
+  popup.style.width = "400px";
+  popup.style.maxHeight = "500px";
+  popup.style.overflowY = "auto";
+
+  popup.innerHTML = `<h3>Commission Requests</h3>`;
+  loggedInUser.commissions.forEach(request => {
+    const requestItem = document.createElement("div");
+    requestItem.style.marginBottom = "15px";
+    requestItem.innerHTML = `
+      <p><strong>Client Email:</strong> ${request.clientEmail}</p>
+      <p><strong>Description:</strong> ${request.description}</p>
+      <hr>
+    `;
+    popup.appendChild(requestItem);
   });
+
+  const closeButton = document.createElement("button");
+  closeButton.textContent = "Close";
+  closeButton.style.marginTop = "10px";
+  closeButton.style.padding = "10px 20px";
+  closeButton.style.background = "#f44336";
+  closeButton.style.color = "#fff";
+  closeButton.style.border = "none";
+  closeButton.style.borderRadius = "5px";
+  closeButton.style.cursor = "pointer";
+  closeButton.onclick = () => document.body.removeChild(popup);
+
+  popup.appendChild(closeButton);
+  document.body.appendChild(popup);
 }
 
     // FUNCTION: Handle Sign-Up
@@ -591,23 +678,116 @@ function loadUserProfile() {
       }
     }
 
- // FUNCTION: Display Profiles in Explore Section
+// FUNCTION: Display Profiles in Explore Section
 function displayProfiles() {
-  const list = document.getElementById("modelersList");
-  list.innerHTML = "";
+  const list = document.getElementById("modelersList"); // Target the container for profile cards
+  list.innerHTML = ""; // Clear any existing content
 
-  profiles.forEach(profile => {
+  profiles.forEach((profile, index) => {
     const item = document.createElement("li");
     item.classList.add("profile-card");
+
     item.innerHTML = `
       <img src="${profile.picture}" alt="${profile.username}">
       <h3>${profile.username}</h3>
       <p><strong>Roles:</strong> ${profile.roles.join(", ")}</p>
       <p><strong>Email:</strong> ${profile.email}</p>
-      <button onclick="viewProfileDetails('${profile.username}')">View Profile</button>
+      <div style="display: flex; justify-content: center; gap: 10px; margin-top: 10px;">
+        <button 
+          onclick="showCommissionForm(${index})" 
+          style="padding: 10px 20px; background: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;">
+          Request Commission
+        </button>
+        <button 
+          style="padding: 10px 20px; background: #4caf50; color: #fff; border: none; border-radius: 5px; cursor: pointer;">
+          View Profile
+        </button>
+      </div>
     `;
-    list.appendChild(item);
+
+    list.appendChild(item); // Append the profile card to the container
   });
+}
+// FUNCTION: Show Friendly Popup
+function showFriendlyPopup(message, color = "#4caf50") {
+  const popup = document.createElement("div");
+  popup.textContent = message;
+  popup.style.position = "fixed";
+  popup.style.top = "10px";
+  popup.style.right = "10px";
+  popup.style.backgroundColor = color;
+  popup.style.color = "#fff";
+  popup.style.padding = "10px 20px";
+  popup.style.borderRadius = "5px";
+  popup.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.2)";
+  popup.style.zIndex = "1000";
+  popup.style.opacity = "1";
+  popup.style.transition = "opacity 0.5s ease";
+
+  document.body.appendChild(popup);
+
+  // Fade out and remove after 2 seconds
+  setTimeout(() => {
+    popup.style.opacity = "0";
+    setTimeout(() => popup.remove(), 500);
+  }, 2000);
+}
+// FUNCTION: Show Commission Request Form
+function showCommissionForm(index) {
+  if (!loggedInUser) {
+    alert("You must be logged in to send a commission request.");
+    navigateTo("login");
+    return;
+  }
+
+  const profile = profiles[index];
+
+  // Check if the user has already sent a request
+  if (profile.commissions && profile.commissions.some(req => req.clientEmail === loggedInUser.email)) {
+    showFriendlyPopup(`You already sent a request to ${profile.username}. Please wait for their response.`, "#f44336");
+    return;
+  }
+
+  const popup = document.createElement("div");
+  popup.style.position = "fixed";
+  popup.style.top = "50%";
+  popup.style.left = "50%";
+  popup.style.transform = "translate(-50%, -50%)";
+  popup.style.backgroundColor = "#fff";
+  popup.style.color = "#000";
+  popup.style.padding = "20px";
+  popup.style.borderRadius = "10px";
+  popup.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.3)";
+  popup.style.zIndex = "1000";
+  popup.style.width = "400px";
+
+  popup.innerHTML = `
+    <h3>Request Commission from ${profile.username}</h3>
+    <form id="commissionForm" onsubmit="event.preventDefault(); sendCommissionRequest(${index});">
+      <textarea id="commissionDescription" placeholder="Short description of the task" required style="width: 100%; height: 80px; margin-bottom: 15px;"></textarea>
+      <input type="email" id="clientEmail" value="${loggedInUser.email}" readonly style="width: 100%; padding: 10px; margin-bottom: 15px; background-color: #f0f0f0; color: #999;">
+      <button type="submit" style="padding: 10px 20px; background: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Send Commission Request</button>
+    </form>
+    <button onclick="document.body.removeChild(this.parentElement)" style="margin-top: 10px; padding: 10px 20px; background: #f44336; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Cancel</button>
+  `;
+  document.body.appendChild(popup);
+}
+// FUNCTION: Send Commission Request
+function sendCommissionRequest(index) {
+  const profile = profiles[index];
+  const description = document.getElementById("commissionDescription").value;
+
+  if (!profile.commissions) profile.commissions = []; // Ensure commissions array exists
+
+  // Add the new request
+  profile.commissions.push({
+    description,
+    clientEmail: loggedInUser.email,
+  });
+
+  showFriendlyPopup(`Request sent to ${profile.username}!`);
+
+  document.body.removeChild(document.getElementById("commissionForm").parentElement); // Remove the popup
 }
 
 // FUNCTION: View Profile Details (placeholder for modal or navigation)
@@ -756,73 +936,3 @@ function handleLogout() {
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
